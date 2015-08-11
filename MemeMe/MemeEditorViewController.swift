@@ -32,8 +32,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var bottomText: String!
     var image: UIImage!
     
-    //for preventing toptext to go up when keyboard appears
-    var isTopTextFieldTouched: Bool!
+    var meme: Meme!
     
     var isEditButtonTouchedInDetailViewCont: Bool = false
     
@@ -50,20 +49,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     
     func textFieldDidBeginEditing(textField: UITextField) {
         
-        if textField == topTextField {
-            isTopTextFieldTouched = true
-        }
-        else{
-            isTopTextFieldTouched = false
-        }
-        
-        //clean textfields when editing begins
+        /// clean textfields when editing begins
         if textField.text == "TOP" || textField.text == "BOTTOM"{
             textField.text = ""
         }
     }
     
-    // if nothing is inserted, turn texts to top and bottom
+    /// if nothing is inserted, turn texts to top and bottom
     func textFieldDidEndEditing(textField: UITextField) {
         
         if textField.text.isEmpty{
@@ -77,6 +69,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
         textField.resignFirstResponder()
         return true;
     }
@@ -91,43 +84,44 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-//        if let topTextt = self.topText{
-//            self.topTextField.text = topTextt
-//        }
-//        
-//        if let bottomTextt = self.bottomText{
-//            self.bottomTextField.text = bottomTextt
-//        }
-//        
-//        if let imagee = self.image{
-//            self.imagePickerView.image = imagee
-//        }
+        
+        if(isEditButtonTouchedInDetailViewCont){
+            
+            if let topTextt = self.topText{
+                self.topTextField.text = topTextt
+            }
+        
+            if let bottomTextt = self.bottomText{
+                self.bottomTextField.text = bottomTextt
+            }
+        
+            if let imagee = self.image{
+                self.imagePickerView.image = imagee
+            }
+            
+            self.actionTopToolBarItem.enabled = true
+            
+        }
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
-        
-        /*
-        if appDelegate.memes.count == 0 {
-            self.cancelTopToolBarItem.enabled = false
-        }else{
-            self.cancelTopToolBarItem.enabled = true
-        }*/
-        
-        //if an image is not picked, disable action button
+        /// if an image is not picked, disable cancel and action button
         if let img = imagePickerView.image{
-            self.actionTopToolBarItem.enabled = true
+            actionTopToolBarItem.enabled = true
+            cancelTopToolBarItem.enabled = true
         }
         else{
-            self.actionTopToolBarItem.enabled = false
+            actionTopToolBarItem.enabled = false
+            cancelTopToolBarItem.enabled = false
         }
         
-        //set texts to impact
+        /// set texts to impact
         topTextField.defaultTextAttributes = textFieldAttributes
         topTextField.textAlignment = NSTextAlignment.Center
         bottomTextField.defaultTextAttributes = textFieldAttributes
         bottomTextField.textAlignment = NSTextAlignment.Center
         
-        //if camera not available, disable camera button
+        /// if camera not available, disable camera button
         cameraBottonBarItem.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         
         self.subscribeToKeyboardNotifications()
@@ -144,27 +138,27 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     func subscribeToKeyboardNotifications(){
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillDisappear:", name: UIKeyboardWillHideNotification, object: nil)
     }
 
-    //shift image up to see the bottom entered text
+    /// shift image up to see the bottom entered text
     func keyboardWillShow(notification: NSNotification){
         
-        if !isTopTextFieldTouched {
+        if bottomTextField.isFirstResponder(){
             self.view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
     
-    //shift image to original
+    /// shift image to original
     func keyboardWillDisappear(notification: NSNotification){
         
-        if !isTopTextFieldTouched {
+        if bottomTextField.isFirstResponder(){
             self.view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
     
     func getKeyboardHeight (notification: NSNotification) -> CGFloat{
+        
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardSize.CGRectValue().height
@@ -178,18 +172,19 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     @IBAction func pickAnImageFromAlbum(sender: AnyObject) {
         
-        let pickerController = UIImagePickerController()
-        pickerController.delegate = self
-        pickerController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-        self.presentViewController(pickerController, animated: true, completion: nil)
-        
+        self.pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.PhotoLibrary)
     }
 
     @IBAction func pickAnImageFromCamera(sender: AnyObject) {
-       
+        
+        self.pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.Camera)
+    }
+    
+    func pickAnImageFromWhichSourceTypeAndPresentPickerView(sourceType: UIImagePickerControllerSourceType){
+        
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
-        pickerController.sourceType = UIImagePickerControllerSourceType.Camera
+        pickerController.sourceType = sourceType
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
@@ -198,7 +193,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //save memed image and related text to appdelegate array
+    /// save memed image and related text to appdelegate array
     func save(passedMemedImage : UIImage) {
         
         var meme = Meme(bottomText: bottomTextField.text, topText: topTextField.text, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
@@ -207,7 +202,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         appDelegate.memes.append(meme)
     }
  
-    
     @IBAction func shareTheMemedImage(sender: AnyObject) {
         
         let memedImage : UIImage = self.generateMemedImage()
@@ -227,8 +221,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
                 self.save(memedImage)
     
                     if self.isEditButtonTouchedInDetailViewCont{
+                        ///return to detail view and call unwind func
                         self.performSegueWithIdentifier("unwindToDetailView", sender: self)
-                        
                     }
                     else
                     {
@@ -240,25 +234,24 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     
     func generateMemedImage() -> UIImage {
         
-        self.topToolbar.hidden = true
-        self.bottomToolbar.hidden = true
-        //self.view.backgroundColor = UIColor.clearColor()
+        ///take screenshot without toolbars
+        topToolbar.hidden = true
+        bottomToolbar.hidden = true
         
         UIGraphicsBeginImageContext(self.view.frame.size)
         self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
         let memedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        self.topToolbar.hidden = false
-        self.bottomToolbar.hidden = false
-        //self.view.backgroundColor = UIColor.darkGrayColor()
+        topToolbar.hidden = false
+        bottomToolbar.hidden = false
         
         return memedImage
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage{
+            
             self.imagePickerView.image = image
         }
     
@@ -267,11 +260,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     @IBAction func cancelEdit(sender: AnyObject) {
-
+        
         self.dismissViewControllerAnimated(true, completion: nil)
     
     }
     
-
 }
 

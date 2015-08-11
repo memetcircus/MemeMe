@@ -12,15 +12,14 @@ import UIKit
 class memeListCollectionViewController : UICollectionViewController{
     
     private let reuseIdentifier = "MemeMeCollectionCell"
-    
-    @IBOutlet var memeCollectionView: UICollectionView!
-    
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
+    @IBOutlet var memeCollectionView: UICollectionView!
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         self.memeCollectionView.reloadData()
-       
     }
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -34,11 +33,9 @@ class memeListCollectionViewController : UICollectionViewController{
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MemeCollectionViewCell
-        
         let memes = appDelegate.memes
         
         cell.imageView.image = memes[indexPath.row].memedImage
-     
         cell.backgroundColor = UIColor.whiteColor()
         
         return cell
@@ -47,11 +44,9 @@ class memeListCollectionViewController : UICollectionViewController{
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         let memes = appDelegate.memes
-        
         let memeDetailViewCont = self.storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
         
         memeDetailViewCont.meme = memes[indexPath.row]
-        
         memeDetailViewCont.hidesBottomBarWhenPushed = true
         
         self.navigationController!.pushViewController(memeDetailViewCont, animated: true)

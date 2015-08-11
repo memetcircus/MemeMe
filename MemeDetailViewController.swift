@@ -21,46 +21,26 @@ class MemeDetailViewController: UIViewController{
         imageView.image = meme.memedImage
     }
     
+    ///turn to lists views
     @IBAction func unwindToDetailViewController(segue: UIStoryboardSegue){
      
         self.dismissViewControllerAnimated(true, completion: {() -> Void in
-            self.navigationController?.popViewControllerAnimated(false)
-        
-            } )
+            self.navigationController?.popViewControllerAnimated(true)
+        })
     }
     
     @IBAction func showMemeEditorViewController(sender: AnyObject) {
-         var storyboard = UIStoryboard (name: "Main", bundle: nil)
+        
+        var storyboard = UIStoryboard (name: "Main", bundle: nil)
         
         var editorVC = storyboard.instantiateViewControllerWithIdentifier("MemeEditorVC") as! MemeEditorViewController
         
-        self.navigationController?.presentViewController(editorVC, animated: true, completion: {() -> Void in
-            
-                editorVC.topTextField.text = self.meme.topText
-                editorVC.bottomTextField.text = self.meme.bottomText
-                editorVC.imagePickerView.image = self.meme.orgImage
-            
-                editorVC.actionTopToolBarItem.enabled = true
-            
-                editorVC.isEditButtonTouchedInDetailViewCont = true
-            }
-            
-)}
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        
-//        if (segue.identifier == "ToEditorViewController" ){
-//    
-////            var memeEditorViewCont : MemeEditorViewController = MemeEditorViewController()
-////            
-////            memeEditorViewCont = segue.destinationViewController as! MemeEditorViewController
-////            
-////            memeEditorViewCont.topText = meme.topText
-////            
-////            memeEditorViewCont.bottomText = meme.bottomText
-////            
-////            memeEditorViewCont.image = meme.orgImage
-//            
-//        }
-//        
-//    }
+        editorVC.topText = meme.topText
+        editorVC.bottomText = meme.bottomText
+        editorVC.image = meme.orgImage
+        editorVC.isEditButtonTouchedInDetailViewCont = true
+        
+        self.navigationController?.presentViewController(editorVC, animated: true, completion:nil)
+        
+    }
 }
