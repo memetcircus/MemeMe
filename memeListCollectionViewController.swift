@@ -15,7 +15,7 @@ class memeListCollectionViewController : UICollectionViewController{
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     @IBOutlet var memeCollectionView: UICollectionView!
-
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -44,14 +44,14 @@ class memeListCollectionViewController : UICollectionViewController{
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         let memes = appDelegate.memes
-        let memeDetailViewCont = self.storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
+        let memeDetailViewCont = storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
         
         memeDetailViewCont.meme = memes[indexPath.row]
         memeDetailViewCont.hidesBottomBarWhenPushed = true
         
-        self.navigationController!.pushViewController(memeDetailViewCont, animated: true)
+        navigationController!.pushViewController(memeDetailViewCont, animated: true)
     }
-
+    
     
     
 }

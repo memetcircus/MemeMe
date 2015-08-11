@@ -10,21 +10,21 @@ import Foundation
 import UIKit
 
 class MemeDetailViewController: UIViewController{
-   
+    
     @IBOutlet weak var imageView: UIImageView!
     
     var meme: Meme!
-
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-    
+        
         imageView.image = meme.memedImage
     }
     
     ///turn to lists views
     @IBAction func unwindToDetailViewController(segue: UIStoryboardSegue){
-     
-        self.dismissViewControllerAnimated(true, completion: {() -> Void in
+        
+        dismissViewControllerAnimated(true, completion: {() -> Void in
             self.navigationController?.popViewControllerAnimated(true)
         })
     }
@@ -40,7 +40,7 @@ class MemeDetailViewController: UIViewController{
         editorVC.image = meme.orgImage
         editorVC.isEditButtonTouchedInDetailViewCont = true
         
-        self.navigationController?.presentViewController(editorVC, animated: true, completion:nil)
+        navigationController?.presentViewController(editorVC, animated: true, completion:nil)
         
     }
 }

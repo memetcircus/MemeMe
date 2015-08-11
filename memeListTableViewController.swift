@@ -16,7 +16,7 @@ class memeListTableViewController : UITableViewController{
     var selectedIndexInTableView : Int = 0
     
     @IBOutlet var memeListTableView: UITableView!
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return appDelegate.memes.count
     }
@@ -58,41 +58,41 @@ class memeListTableViewController : UITableViewController{
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if (segue.identifier == "toDetailViewController" ){
-        
+            
             let memes = appDelegate.memes
             let memeDetailViewCont = segue.destinationViewController as! MemeDetailViewController
-
+            
             memeDetailViewCont.hidesBottomBarWhenPushed = true
             memeDetailViewCont.meme = memes[selectedIndexInTableView]
         }
     }
-
-
+    
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let memes = appDelegate.memes
         selectedIndexInTableView = indexPath.row
-        self.performSegueWithIdentifier("toDetailViewController", sender: self)
+        performSegueWithIdentifier("toDetailViewController", sender: self)
         
     }
     
     ///delete row
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-         let memes = appDelegate.memes
+        let memes = appDelegate.memes
         
-            if editingStyle == UITableViewCellEditingStyle.Delete{
+        if editingStyle == UITableViewCellEditingStyle.Delete{
             
-                appDelegate.memes.removeAtIndex(indexPath.row)
-                memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
+            appDelegate.memes.removeAtIndex(indexPath.row)
+            memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        }
     }
     
     @IBAction func showMemeEditorViewController(sender: AnyObject) {
         
-         self.performSegueWithIdentifier("toEditorViewController", sender: self)
+        performSegueWithIdentifier("toEditorViewController", sender: self)
     }
-   
+    
     
     
 }

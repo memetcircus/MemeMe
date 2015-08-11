@@ -9,7 +9,7 @@
 import UIKit
 
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
-
+    
     @IBOutlet weak var imagePickerView: UIImageView!
     
     @IBOutlet weak var topTextField: UITextField!
@@ -17,7 +17,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     @IBOutlet weak var bottomTextField: UITextField!
     
     @IBOutlet weak var topToolbar: UIToolbar!
-  
+    
     @IBOutlet weak var bottomToolbar: UIToolbar!
     
     @IBOutlet weak var actionTopToolBarItem: UIBarButtonItem!
@@ -88,18 +88,18 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         if(isEditButtonTouchedInDetailViewCont){
             
             if let topTextt = self.topText{
-                self.topTextField.text = topTextt
-            }
-        
-            if let bottomTextt = self.bottomText{
-                self.bottomTextField.text = bottomTextt
-            }
-        
-            if let imagee = self.image{
-                self.imagePickerView.image = imagee
+                topTextField.text = topTextt
             }
             
-            self.actionTopToolBarItem.enabled = true
+            if let bottomTextt = self.bottomText{
+                bottomTextField.text = bottomTextt
+            }
+            
+            if let imagee = self.image{
+                imagePickerView.image = imagee
+            }
+            
+            actionTopToolBarItem.enabled = true
             
         }
         
@@ -124,15 +124,15 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         /// if camera not available, disable camera button
         cameraBottonBarItem.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         
-        self.subscribeToKeyboardNotifications()
+        subscribeToKeyboardNotifications()
         
-       
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        self.unsubscribeFromKeyboardNotifications()
+        unsubscribeFromKeyboardNotifications()
     }
     
     func subscribeToKeyboardNotifications(){
@@ -140,12 +140,12 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillDisappear:", name: UIKeyboardWillHideNotification, object: nil)
     }
-
+    
     /// shift image up to see the bottom entered text
     func keyboardWillShow(notification: NSNotification){
         
         if bottomTextField.isFirstResponder(){
-            self.view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
     
@@ -153,7 +153,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     func keyboardWillDisappear(notification: NSNotification){
         
         if bottomTextField.isFirstResponder(){
-            self.view.frame.origin.y += getKeyboardHeight(notification)
+            view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
     
@@ -165,19 +165,19 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func unsubscribeFromKeyboardNotifications(){
-       
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification , object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification , object: nil)
     }
-
+    
     @IBAction func pickAnImageFromAlbum(sender: AnyObject) {
         
-        self.pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.PhotoLibrary)
+        pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.PhotoLibrary)
     }
-
+    
     @IBAction func pickAnImageFromCamera(sender: AnyObject) {
         
-        self.pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.Camera)
+        pickAnImageFromWhichSourceTypeAndPresentPickerView(UIImagePickerControllerSourceType.Camera)
     }
     
     func pickAnImageFromWhichSourceTypeAndPresentPickerView(sourceType: UIImagePickerControllerSourceType){
@@ -185,23 +185,23 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
         pickerController.sourceType = sourceType
-        self.presentViewController(pickerController, animated: true, completion: nil)
+        presentViewController(pickerController, animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     /// save memed image and related text to appdelegate array
     func save(passedMemedImage : UIImage) {
         
         var meme = Meme(bottomText: bottomTextField.text, topText: topTextField.text, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
-    
+        
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.memes.append(meme)
     }
- 
+    
     @IBAction func shareTheMemedImage(sender: AnyObject) {
         
         let memedImage : UIImage = self.generateMemedImage()
@@ -214,20 +214,20 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             UIActivityTypePostToTencentWeibo
         ]
         
-        self.presentViewController(nextController, animated: true, completion: nil)
+        presentViewController(nextController, animated: true, completion: nil)
         
         nextController.completionWithItemsHandler = {(activityType: String!, completed: Bool, returnedItems: [AnyObject]!, error: NSError!) -> Void in
             if completed {
                 self.save(memedImage)
-    
-                    if self.isEditButtonTouchedInDetailViewCont{
-                        ///return to detail view and call unwind func
-                        self.performSegueWithIdentifier("unwindToDetailView", sender: self)
-                    }
-                    else
-                    {
-                        self.dismissViewControllerAnimated(true, completion:nil)
-                    }
+                
+                if self.isEditButtonTouchedInDetailViewCont{
+                    ///return to detail view and call unwind func
+                    self.performSegueWithIdentifier("unwindToDetailView", sender: self)
+                }
+                else
+                {
+                    self.dismissViewControllerAnimated(true, completion:nil)
+                }
             }
         }
     }
@@ -239,7 +239,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         bottomToolbar.hidden = true
         
         UIGraphicsBeginImageContext(self.view.frame.size)
-        self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
+        view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
         let memedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -252,17 +252,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage{
             
-            self.imagePickerView.image = image
+            imagePickerView.image = image
         }
-    
-        self.dismissViewControllerAnimated(true, completion: nil)
-       
+        
+        dismissViewControllerAnimated(true, completion: nil)
+        
     }
     
     @IBAction func cancelEdit(sender: AnyObject) {
         
-        self.dismissViewControllerAnimated(true, completion: nil)
-    
+        dismissViewControllerAnimated(true, completion: nil)
+        
     }
     
 }
