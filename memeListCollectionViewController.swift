@@ -19,7 +19,7 @@ class memeListCollectionViewController : UICollectionViewController{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.memeCollectionView.reloadData()
+        memeCollectionView.reloadData()
     }
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
