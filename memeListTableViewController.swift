@@ -24,7 +24,7 @@ class memeListTableViewController : UITableViewController{
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let memes = appDelegate.memes
-        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)! as UITableViewCell
         let imageViewInCell : UIImageView = cell.contentView.viewWithTag(100) as! UIImageView
         let labelInCell : UILabel = cell.contentView.viewWithTag(101) as! UILabel
         
@@ -38,7 +38,7 @@ class memeListTableViewController : UITableViewController{
     ///scale bottom and top text to show in rows
     func scaleLargeTextToTenCharacters(string: String) -> String {
         
-        var newString = string as NSString
+        let newString = string as NSString
         
         if newString.length > 10 {
             return newString.substringToIndex(10) as String
@@ -70,7 +70,7 @@ class memeListTableViewController : UITableViewController{
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let memes = appDelegate.memes
+        _ = appDelegate.memes
         selectedIndexInTableView = indexPath.row
         performSegueWithIdentifier("toDetailViewController", sender: self)
         
@@ -79,7 +79,7 @@ class memeListTableViewController : UITableViewController{
     ///delete row
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        let memes = appDelegate.memes
+        _ = appDelegate.memes
         
         if editingStyle == UITableViewCellEditingStyle.Delete{
             

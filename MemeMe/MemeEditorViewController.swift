@@ -58,7 +58,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     /// if nothing is inserted, turn texts to top and bottom
     func textFieldDidEndEditing(textField: UITextField) {
         
-        if textField.text.isEmpty{
+        if textField.text!.isEmpty{
             if textField == topTextField{
                 textField.text = "TOP"
             }
@@ -103,10 +103,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             
         }
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        _ = UIApplication.sharedApplication().delegate as! AppDelegate
         
         /// if an image is not picked, disable cancel and action button
-        if let img = imagePickerView.image{
+        if let _ = imagePickerView.image{
             actionTopToolBarItem.enabled = true
             cancelTopToolBarItem.enabled = true
         }
@@ -196,7 +196,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     /// save memed image and related text to appdelegate array
     func save(passedMemedImage : UIImage) {
         
-        var meme = Meme(bottomText: bottomTextField.text, topText: topTextField.text, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
+        let meme = Meme(bottomText: bottomTextField.text!, topText: topTextField.text!, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.memes.append(meme)
@@ -216,7 +216,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         
         presentViewController(nextController, animated: true, completion: nil)
         
-        nextController.completionWithItemsHandler = {(activityType: String!, completed: Bool, returnedItems: [AnyObject]!, error: NSError!) -> Void in
+        nextController.completionWithItemsHandler = {(activityType: String?, completed: Bool, returnedItems: [AnyObject]?, error: NSError?) -> Void in
             if completed {
                 self.save(memedImage)
                 
@@ -249,7 +249,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         return memedImage
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage{
             
             imagePickerView.image = image

@@ -31,9 +31,9 @@ class MemeDetailViewController: UIViewController{
     
     @IBAction func showMemeEditorViewController(sender: AnyObject) {
         
-        var storyboard = UIStoryboard (name: "Main", bundle: nil)
+        let storyboard = UIStoryboard (name: "Main", bundle: nil)
         
-        var editorVC = storyboard.instantiateViewControllerWithIdentifier("MemeEditorVC") as! MemeEditorViewController
+        let editorVC = storyboard.instantiateViewControllerWithIdentifier("MemeEditorVC") as! MemeEditorViewController
         
         editorVC.topText = meme.topText
         editorVC.bottomText = meme.bottomText
