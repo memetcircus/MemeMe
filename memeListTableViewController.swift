@@ -8,27 +8,35 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 class memeListTableViewController : UITableViewController{
     
+    var memes: [Meme]!
+    
     private let reuseIdentifier = "memedCell"
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var selectedIndexInTableView : Int = 0
     
     @IBOutlet var memeListTableView: UITableView!
     
+    lazy var sharedContext: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appDelegate.memes.count
+        return memes.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let memes = appDelegate.memes
+       
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)! as UITableViewCell
         let imageViewInCell : UIImageView = cell.contentView.viewWithTag(100) as! UIImageView
         let labelInCell : UILabel = cell.contentView.viewWithTag(101) as! UILabel
         
-        imageViewInCell.image = memes[indexPath.row].memedImage
+        imageViewInCell.image = UIImage(data: memes[indexPath.row].memedImage)
         
         labelInCell.text = scaleLargeTextToTenCharacters(memes[indexPath.row].topText) + "..." + scaleLargeTextToTenCharacters(memes[indexPath.row].bottomText)
         
@@ -51,15 +59,14 @@ class memeListTableViewController : UITableViewController{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        memes = fetchAllMemes()
         memeListTableView.reloadData()
     }
-    
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if (segue.identifier == "toDetailViewController" ){
-            
-            let memes = appDelegate.memes
+ 
             let memeDetailViewCont = segue.destinationViewController as! MemeDetailViewController
             
             memeDetailViewCont.hidesBottomBarWhenPushed = true
@@ -70,7 +77,6 @@ class memeListTableViewController : UITableViewController{
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        _ = appDelegate.memes
         selectedIndexInTableView = indexPath.row
         performSegueWithIdentifier("toDetailViewController", sender: self)
         
@@ -79,12 +85,12 @@ class memeListTableViewController : UITableViewController{
     ///delete row
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        _ = appDelegate.memes
-        
         if editingStyle == UITableViewCellEditingStyle.Delete{
-            
-            appDelegate.memes.removeAtIndex(indexPath.row)
+            let memeToBeDeleted = memes[indexPath.row]
+            memes.removeAtIndex(indexPath.row)
             memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            sharedContext.deleteObject(memeToBeDeleted)
+            CoreDataStackManager.sharedInstance().saveContext()
         }
     }
     
@@ -93,6 +99,17 @@ class memeListTableViewController : UITableViewController{
         performSegueWithIdentifier("toEditorViewController", sender: self)
     }
     
-    
+    func fetchAllMemes() -> [Meme]{
+        
+        let fetchRequest = NSFetchRequest(entityName: "Meme")
+        
+        do{
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
+            
+        }catch let error as NSError{
+            print("Error in fetchAllMemes():\(error)")
+            return [Meme]()
+        }
+    }
     
 }

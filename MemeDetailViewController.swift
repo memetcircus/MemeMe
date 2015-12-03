@@ -18,7 +18,7 @@ class MemeDetailViewController: UIViewController{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        imageView.image = meme.memedImage
+        imageView.image = UIImage(data: meme.memedImage)
     }
     
     ///turn to lists views
@@ -37,7 +37,7 @@ class MemeDetailViewController: UIViewController{
         
         editorVC.topText = meme.topText
         editorVC.bottomText = meme.bottomText
-        editorVC.image = meme.orgImage
+        editorVC.image = UIImage(data: meme.orgImage)
         editorVC.isEditButtonTouchedInDetailViewCont = true
         
         navigationController?.presentViewController(editorVC, animated: true, completion:nil)

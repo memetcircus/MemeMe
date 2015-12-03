@@ -8,12 +8,30 @@
 
 import Foundation
 import UIKit
+import CoreData
 
-struct Meme{
+class Meme : NSManagedObject {
    
-    let bottomText: String
-    let topText: String
-    let orgImage: UIImage
-    let memedImage: UIImage
+    @NSManaged var bottomText: String
+    @NSManaged var topText: String
+    @NSManaged var orgImage: NSData
+    @NSManaged var memedImage: NSData
 
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
+    
+    init(dictionary: [String: AnyObject], context: NSManagedObjectContext){
+        
+        let entity =  NSEntityDescription.entityForName("Meme", inManagedObjectContext: context)!
+
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
+        bottomText = dictionary["bottomText"] as! String
+        topText = dictionary["topText"] as! String
+        
+        orgImage = UIImageJPEGRepresentation(dictionary["orgImage"] as! UIImage, 1)!
+        memedImage = UIImageJPEGRepresentation(dictionary["memedImage"] as! UIImage, 1)!
+        
+    }
 }

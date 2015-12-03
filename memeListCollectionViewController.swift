@@ -8,17 +8,24 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 class memeListCollectionViewController : UICollectionViewController{
+    
+    var memes: [Meme]!
     
     private let reuseIdentifier = "MemeMeCollectionCell"
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     @IBOutlet var memeCollectionView: UICollectionView!
     
+    lazy var sharedContext: NSManagedObjectContext = {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }()
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+        memes = fetchAllMemes()
         memeCollectionView.reloadData()
     }
     
@@ -27,15 +34,14 @@ class memeListCollectionViewController : UICollectionViewController{
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return appDelegate.memes.count
+        return memes.count
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MemeCollectionViewCell
-        let memes = appDelegate.memes
         
-        cell.imageView.image = memes[indexPath.row].memedImage
+        cell.imageView.image = UIImage(data: memes[indexPath.row].memedImage) 
         cell.backgroundColor = UIColor.whiteColor()
         
         return cell
@@ -43,7 +49,6 @@ class memeListCollectionViewController : UICollectionViewController{
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let memes = appDelegate.memes
         let memeDetailViewCont = storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
         
         memeDetailViewCont.meme = memes[indexPath.row]
@@ -52,6 +57,16 @@ class memeListCollectionViewController : UICollectionViewController{
         navigationController!.pushViewController(memeDetailViewCont, animated: true)
     }
     
-    
-    
+    func fetchAllMemes() -> [Meme]{
+        
+        let fetchRequest = NSFetchRequest(entityName: "Meme")
+        
+        do{
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
+            
+        }catch let error as NSError{
+            print("Error in fetchAllMemes():\(error)")
+            return [Meme]()
+        }
+    }
 }

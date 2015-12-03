@@ -18,7 +18,9 @@
 		F41A47DC1B77504200BEBC0B /* MemeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41A47DB1B77504200BEBC0B /* MemeDetailViewController.swift */; };
 		F41A47DF1B776D8000BEBC0B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F41A47DD1B776D8000BEBC0B /* Main.storyboard */; };
 		F41A47E11B77956600BEBC0B /* MemeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41A47E01B77956600BEBC0B /* MemeCollectionViewCell.swift */; };
+		F42B64621C0EF8CF00640B2B /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42B64611C0EF8CF00640B2B /* CoreDataStackManager.swift */; };
 		F4A738081B74AE9D0079685B /* Meme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A738071B74AE9D0079685B /* Meme.swift */; };
+		F4B5B0ED1C0DCBFC0045890E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F4B5B0EB1C0DCBFC0045890E /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +49,9 @@
 		F41A47DB1B77504200BEBC0B /* MemeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MemeDetailViewController.swift; path = ../MemeDetailViewController.swift; sourceTree = "<group>"; };
 		F41A47DE1B776D8000BEBC0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MemeMe/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F41A47E01B77956600BEBC0B /* MemeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MemeCollectionViewCell.swift; path = ../MemeCollectionViewCell.swift; sourceTree = "<group>"; };
+		F42B64611C0EF8CF00640B2B /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = ../CoreDataStackManager.swift; sourceTree = "<group>"; };
 		F4A738071B74AE9D0079685B /* Meme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Meme.swift; path = ../Meme.swift; sourceTree = "<group>"; };
+		F4B5B0EC1C0DCBFC0045890E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +93,8 @@
 		F401EB1D1B71EB3F00269DB0 /* MemeMe */ = {
 			isa = PBXGroup;
 			children = (
+				F42B64611C0EF8CF00640B2B /* CoreDataStackManager.swift */,
+				F4B5B0EB1C0DCBFC0045890E /* Model.xcdatamodeld */,
 				F401EB201B71EB3F00269DB0 /* AppDelegate.swift */,
 				F4A738071B74AE9D0079685B /* Meme.swift */,
 				F41A47E01B77956600BEBC0B /* MemeCollectionViewCell.swift */,
@@ -234,8 +240,10 @@
 				F401EB261B71EB3F00269DB0 /* MemeEditorViewController.swift in Sources */,
 				F4A738081B74AE9D0079685B /* Meme.swift in Sources */,
 				F41A47E11B77956600BEBC0B /* MemeCollectionViewCell.swift in Sources */,
+				F42B64621C0EF8CF00640B2B /* CoreDataStackManager.swift in Sources */,
 				F41A47D81B760D8800BEBC0B /* memeListTableViewController.swift in Sources */,
 				F401EB211B71EB3F00269DB0 /* AppDelegate.swift in Sources */,
+				F4B5B0ED1C0DCBFC0045890E /* Model.xcdatamodeld in Sources */,
 				F41A47DC1B77504200BEBC0B /* MemeDetailViewController.swift in Sources */,
 				F41A47DA1B760DA600BEBC0B /* memeListCollectionViewController.swift in Sources */,
 				F401EB241B71EB3F00269DB0 /* MemeMe.xcdatamodeld in Sources */,
@@ -461,6 +469,17 @@
 			);
 			currentVersion = F401EB231B71EB3F00269DB0 /* MemeMe.xcdatamodel */;
 			path = MemeMe.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		F4B5B0EB1C0DCBFC0045890E /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F4B5B0EC1C0DCBFC0045890E /* Model.xcdatamodel */,
+			);
+			currentVersion = F4B5B0EC1C0DCBFC0045890E /* Model.xcdatamodel */;
+			name = Model.xcdatamodeld;
+			path = ../Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

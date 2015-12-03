@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
@@ -45,6 +46,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -196,10 +201,20 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     /// save memed image and related text to appdelegate array
     func save(passedMemedImage : UIImage) {
         
-        let meme = Meme(bottomText: bottomTextField.text!, topText: topTextField.text!, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
+        //let meme = Meme(bottomText: bottomTextField.text!, topText: topTextField.text!, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
+        let dictionary : [String : AnyObject] = [
+            "bottomText" : bottomTextField.text!,
+            "topText" :   topTextField.text!,
+            "orgImage" : imagePickerView.image!,
+            "memedImage" : passedMemedImage
+        ]
+        
+        let memeToBeAdded = Meme(dictionary: dictionary, context: sharedContext)
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.memes.append(meme)
+        appDelegate.memes.append(memeToBeAdded)
+        
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     @IBAction func shareTheMemedImage(sender: AnyObject) {
