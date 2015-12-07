@@ -33,7 +33,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var bottomText: String!
     var image: UIImage!
     
-    var meme: Meme!
+    //var meme: Meme!
     
     var isEditButtonTouchedInDetailViewCont: Bool = false
     
@@ -107,8 +107,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             actionTopToolBarItem.enabled = true
             
         }
-        
-        _ = UIApplication.sharedApplication().delegate as! AppDelegate
         
         /// if an image is not picked, disable cancel and action button
         if let _ = imagePickerView.image{
@@ -209,10 +207,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             "memedImage" : passedMemedImage
         ]
         
-        let memeToBeAdded = Meme(dictionary: dictionary, context: sharedContext)
+        _ = Meme(dictionary: dictionary, context: sharedContext)
         
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.memes.append(memeToBeAdded)
+        //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        //appDelegate.memes.append(memeToBeAdded)
         
         CoreDataStackManager.sharedInstance().saveContext()
     }

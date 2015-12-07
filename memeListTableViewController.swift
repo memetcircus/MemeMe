@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 import CoreData
 
-class memeListTableViewController : UITableViewController{
+class memeListTableViewController : UITableViewController, NSFetchedResultsControllerDelegate{
     
-    var memes: [Meme]!
+    //var memes: [Meme]!
     
     private let reuseIdentifier = "memedCell"
     
     //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    var selectedIndexInTableView : Int = 0
+    var selectedIndexInTableView : NSIndexPath!
     
     @IBOutlet var memeListTableView: UITableView!
     
@@ -25,20 +25,34 @@ class memeListTableViewController : UITableViewController{
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }()
     
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "Meme")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationTime", ascending: false)]
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        return fetchedResultsController
+        
+    }()
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return memes.count
+        //return memes.count
+        let sectionInfo = self.fetchedResultsController.sections![section]
+        return (sectionInfo as NSFetchedResultsSectionInfo).numberOfObjects
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-       
+        let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
+        
         let cell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifier)! as UITableViewCell
         let imageViewInCell : UIImageView = cell.contentView.viewWithTag(100) as! UIImageView
         let labelInCell : UILabel = cell.contentView.viewWithTag(101) as! UILabel
         
-        imageViewInCell.image = UIImage(data: memes[indexPath.row].memedImage)
+        imageViewInCell.image = UIImage(data: meme.memedImage)
         
-        labelInCell.text = scaleLargeTextToTenCharacters(memes[indexPath.row].topText) + "..." + scaleLargeTextToTenCharacters(memes[indexPath.row].bottomText)
+        labelInCell.text = scaleLargeTextToTenCharacters(meme.topText) + "..." + scaleLargeTextToTenCharacters(meme.bottomText)
         
         return cell
     }
@@ -59,25 +73,41 @@ class memeListTableViewController : UITableViewController{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        memes = fetchAllMemes()
+        do{
+            try fetchedResultsController.performFetch()
+        }catch{
+            
+        }
+        
+        //memes = fetchAllMemes()
         memeListTableView.reloadData()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        fetchedResultsController.delegate = self
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if (segue.identifier == "toDetailViewController" ){
  
+            let meme = fetchedResultsController.objectAtIndexPath(selectedIndexInTableView) as! Meme
+            
             let memeDetailViewCont = segue.destinationViewController as! MemeDetailViewController
             
             memeDetailViewCont.hidesBottomBarWhenPushed = true
-            memeDetailViewCont.meme = memes[selectedIndexInTableView]
+            //memeDetailViewCont.meme = memes[selectedIndexInTableView]
+            memeDetailViewCont.meme = meme
         }
     }
     
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        selectedIndexInTableView = indexPath.row
+        selectedIndexInTableView = indexPath
+        
         performSegueWithIdentifier("toDetailViewController", sender: self)
         
     }
@@ -86,10 +116,11 @@ class memeListTableViewController : UITableViewController{
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.Delete{
-            let memeToBeDeleted = memes[indexPath.row]
-            memes.removeAtIndex(indexPath.row)
-            memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-            sharedContext.deleteObject(memeToBeDeleted)
+            //let memeToBeDeleted = memes[indexPath.row]
+            let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
+            //memes.removeAtIndex(indexPath.row)
+            //memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            sharedContext.deleteObject(meme)
             CoreDataStackManager.sharedInstance().saveContext()
         }
     }
@@ -99,17 +130,59 @@ class memeListTableViewController : UITableViewController{
         performSegueWithIdentifier("toEditorViewController", sender: self)
     }
     
-    func fetchAllMemes() -> [Meme]{
-        
-        let fetchRequest = NSFetchRequest(entityName: "Meme")
-        
-        do{
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
-            
-        }catch let error as NSError{
-            print("Error in fetchAllMemes():\(error)")
-            return [Meme]()
-        }
+//    func fetchAllMemes() -> [Meme]{
+//        
+//        let fetchRequest = NSFetchRequest(entityName: "Meme")
+//        
+//        do{
+//            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
+//            
+//        }catch let error as NSError{
+//            print("Error in fetchAllMemes():\(error)")
+//            return [Meme]()
+//        }
+//    }
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        self.tableView.beginUpdates()
     }
     
+    func controller(controller: NSFetchedResultsController,
+        didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
+        atIndex sectionIndex: Int,
+        forChangeType type: NSFetchedResultsChangeType) {
+            
+            switch type {
+            case .Insert:
+                self.tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+                
+            case .Delete:
+                self.tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+                
+            default:
+                return
+            }
+    }
+    
+    func controller(controller: NSFetchedResultsController,
+        didChangeObject anObject: AnyObject,
+        atIndexPath indexPath: NSIndexPath?,
+        forChangeType type: NSFetchedResultsChangeType,
+        newIndexPath: NSIndexPath?) {
+            
+            switch type {
+            case .Insert:
+                tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+                
+            case .Delete:
+                tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+                
+            default:
+                break
+            }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        self.tableView.endUpdates()
+    }
 }

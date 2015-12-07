@@ -10,12 +10,13 @@ import Foundation
 import UIKit
 import CoreData
 
-class memeListCollectionViewController : UICollectionViewController{
+class memeListCollectionViewController : UICollectionViewController, NSFetchedResultsControllerDelegate{
     
-    var memes: [Meme]!
+    //var memes: [Meme]!
     
     private let reuseIdentifier = "MemeMeCollectionCell"
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     @IBOutlet var memeCollectionView: UICollectionView!
     
@@ -23,10 +24,34 @@ class memeListCollectionViewController : UICollectionViewController{
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }()
     
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "Meme")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "creationTime", ascending: false)]
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.sharedContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        return fetchedResultsController
+        
+    }()
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        memes = fetchAllMemes()
+        
+        do{
+            try fetchedResultsController.performFetch()
+        }catch{
+            
+        }
+        //memes = fetchAllMemes()
+        
         memeCollectionView.reloadData()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        fetchedResultsController.delegate = self
     }
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -34,14 +59,19 @@ class memeListCollectionViewController : UICollectionViewController{
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return memes.count
+        //return memes.count
+        let sectionInfo = self.fetchedResultsController.sections![section]
+        return (sectionInfo as NSFetchedResultsSectionInfo).numberOfObjects
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
+        let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! MemeCollectionViewCell
         
-        cell.imageView.image = UIImage(data: memes[indexPath.row].memedImage) 
+        cell.imageView.image = UIImage(data: meme.memedImage)
+        
         cell.backgroundColor = UIColor.whiteColor()
         
         return cell
@@ -49,24 +79,28 @@ class memeListCollectionViewController : UICollectionViewController{
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
+        
         let memeDetailViewCont = storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
         
-        memeDetailViewCont.meme = memes[indexPath.row]
+       // memeDetailViewCont.meme = memes[indexPath.row]
+        memeDetailViewCont.meme = meme
+        
         memeDetailViewCont.hidesBottomBarWhenPushed = true
         
         navigationController!.pushViewController(memeDetailViewCont, animated: true)
     }
     
-    func fetchAllMemes() -> [Meme]{
-        
-        let fetchRequest = NSFetchRequest(entityName: "Meme")
-        
-        do{
-            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
-            
-        }catch let error as NSError{
-            print("Error in fetchAllMemes():\(error)")
-            return [Meme]()
-        }
-    }
+//    func fetchAllMemes() -> [Meme]{
+//        
+//        let fetchRequest = NSFetchRequest(entityName: "Meme")
+//        
+//        do{
+//            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
+//            
+//        }catch let error as NSError{
+//            print("Error in fetchAllMemes():\(error)")
+//            return [Meme]()
+//        }
+//    }
 }

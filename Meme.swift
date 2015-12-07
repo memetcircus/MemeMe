@@ -16,6 +16,7 @@ class Meme : NSManagedObject {
     @NSManaged var topText: String
     @NSManaged var orgImage: NSData
     @NSManaged var memedImage: NSData
+    @NSManaged var creationTime: NSDate
 
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
@@ -33,5 +34,6 @@ class Meme : NSManagedObject {
         orgImage = UIImageJPEGRepresentation(dictionary["orgImage"] as! UIImage, 1)!
         memedImage = UIImageJPEGRepresentation(dictionary["memedImage"] as! UIImage, 1)!
         
+        creationTime = NSDate()
     }
 }
