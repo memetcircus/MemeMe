@@ -12,11 +12,8 @@ import CoreData
 
 class memeListTableViewController : UITableViewController, NSFetchedResultsControllerDelegate{
     
-    //var memes: [Meme]!
-    
     private let reuseIdentifier = "memedCell"
-    
-    //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
     var selectedIndexInTableView : NSIndexPath!
     
     @IBOutlet var memeListTableView: UITableView!
@@ -37,7 +34,7 @@ class memeListTableViewController : UITableViewController, NSFetchedResultsContr
     }()
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //return memes.count
+      
         let sectionInfo = self.fetchedResultsController.sections![section]
         return (sectionInfo as NSFetchedResultsSectionInfo).numberOfObjects
     }
@@ -79,7 +76,6 @@ class memeListTableViewController : UITableViewController, NSFetchedResultsContr
             
         }
         
-        //memes = fetchAllMemes()
         memeListTableView.reloadData()
     }
     
@@ -98,7 +94,7 @@ class memeListTableViewController : UITableViewController, NSFetchedResultsContr
             let memeDetailViewCont = segue.destinationViewController as! MemeDetailViewController
             
             memeDetailViewCont.hidesBottomBarWhenPushed = true
-            //memeDetailViewCont.meme = memes[selectedIndexInTableView]
+          
             memeDetailViewCont.meme = meme
         }
     }
@@ -116,10 +112,7 @@ class memeListTableViewController : UITableViewController, NSFetchedResultsContr
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.Delete{
-            //let memeToBeDeleted = memes[indexPath.row]
             let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
-            //memes.removeAtIndex(indexPath.row)
-            //memeListTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
             sharedContext.deleteObject(meme)
             CoreDataStackManager.sharedInstance().saveContext()
         }
@@ -129,20 +122,7 @@ class memeListTableViewController : UITableViewController, NSFetchedResultsContr
         
         performSegueWithIdentifier("toEditorViewController", sender: self)
     }
-    
-//    func fetchAllMemes() -> [Meme]{
-//        
-//        let fetchRequest = NSFetchRequest(entityName: "Meme")
-//        
-//        do{
-//            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
-//            
-//        }catch let error as NSError{
-//            print("Error in fetchAllMemes():\(error)")
-//            return [Meme]()
-//        }
-//    }
-    
+
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
         self.tableView.beginUpdates()
     }

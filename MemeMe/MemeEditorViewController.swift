@@ -12,28 +12,18 @@ import CoreData
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var imagePickerView: UIImageView!
-    
     @IBOutlet weak var topTextField: UITextField!
-    
     @IBOutlet weak var bottomTextField: UITextField!
-    
     @IBOutlet weak var topToolbar: UIToolbar!
-    
     @IBOutlet weak var bottomToolbar: UIToolbar!
-    
     @IBOutlet weak var actionTopToolBarItem: UIBarButtonItem!
-    
     @IBOutlet weak var cancelTopToolBarItem: UIBarButtonItem!
-    
     @IBOutlet weak var cameraBottonBarItem: UIBarButtonItem!
-    
     @IBOutlet weak var albumBottomBarItem: UIBarButtonItem!
     
     var topText: String!
     var bottomText: String!
     var image: UIImage!
-    
-    //var meme: Meme!
     
     var isEditButtonTouchedInDetailViewCont: Bool = false
     
@@ -199,7 +189,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     /// save memed image and related text to appdelegate array
     func save(passedMemedImage : UIImage) {
         
-        //let meme = Meme(bottomText: bottomTextField.text!, topText: topTextField.text!, orgImage: imagePickerView.image!, memedImage: passedMemedImage)
         let dictionary : [String : AnyObject] = [
             "bottomText" : bottomTextField.text!,
             "topText" :   topTextField.text!,
@@ -208,9 +197,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         ]
         
         _ = Meme(dictionary: dictionary, context: sharedContext)
-        
-        //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        //appDelegate.memes.append(memeToBeAdded)
         
         CoreDataStackManager.sharedInstance().saveContext()
     }
@@ -264,19 +250,12 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage{
-            
             imagePickerView.image = image
         }
-        
         dismissViewControllerAnimated(true, completion: nil)
-        
     }
     
     @IBAction func cancelEdit(sender: AnyObject) {
-        
         dismissViewControllerAnimated(true, completion: nil)
-        
     }
-    
 }
-

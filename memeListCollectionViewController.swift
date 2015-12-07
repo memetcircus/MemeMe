@@ -12,11 +12,7 @@ import CoreData
 
 class memeListCollectionViewController : UICollectionViewController, NSFetchedResultsControllerDelegate{
     
-    //var memes: [Meme]!
-    
     private let reuseIdentifier = "MemeMeCollectionCell"
-    
-    //let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     @IBOutlet var memeCollectionView: UICollectionView!
     
@@ -43,8 +39,7 @@ class memeListCollectionViewController : UICollectionViewController, NSFetchedRe
         }catch{
             
         }
-        //memes = fetchAllMemes()
-        
+     
         memeCollectionView.reloadData()
     }
     
@@ -59,7 +54,7 @@ class memeListCollectionViewController : UICollectionViewController, NSFetchedRe
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return memes.count
+      
         let sectionInfo = self.fetchedResultsController.sections![section]
         return (sectionInfo as NSFetchedResultsSectionInfo).numberOfObjects
     }
@@ -82,8 +77,7 @@ class memeListCollectionViewController : UICollectionViewController, NSFetchedRe
         let meme = fetchedResultsController.objectAtIndexPath(indexPath) as! Meme
         
         let memeDetailViewCont = storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
-        
-       // memeDetailViewCont.meme = memes[indexPath.row]
+
         memeDetailViewCont.meme = meme
         
         memeDetailViewCont.hidesBottomBarWhenPushed = true
@@ -91,16 +85,4 @@ class memeListCollectionViewController : UICollectionViewController, NSFetchedRe
         navigationController!.pushViewController(memeDetailViewCont, animated: true)
     }
     
-//    func fetchAllMemes() -> [Meme]{
-//        
-//        let fetchRequest = NSFetchRequest(entityName: "Meme")
-//        
-//        do{
-//            return try sharedContext.executeFetchRequest(fetchRequest) as! [Meme]
-//            
-//        }catch let error as NSError{
-//            print("Error in fetchAllMemes():\(error)")
-//            return [Meme]()
-//        }
-//    }
 }
