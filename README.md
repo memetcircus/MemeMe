@@ -18,4 +18,9 @@ When a user clicks inside one of the text fields, the default text disappears an
 When the user finishes entering text and presses return, the keyboard is dismissed and the new meme is displayed and persisted.  
 When the user presses the share button, Apple’s stock Activity View appears, displaying several options for sharing the meme. After an option is chosen, the Activity View is dismissed and the **Sent Memes View** appears. The **Sent Memes View** also appears upon pressing the “Cancel” button.  
 Selecting a meme from the table or collection presents the **Meme Detail View**. Clicking on the  back arrow of the **Meme Detail View** presents the previous **Sent Memes View**, either the table or collection.  
+  
+####Licence  
+
+MemeMe created by Mehmet Akif Acar on August 5, 2015.  
+Copyright © 2015 Mehmet Akif Acar, www.memetcircus.com. All rights reserved.
 
